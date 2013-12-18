@@ -1,81 +1,75 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+
 namespace FaireCarte
 {
-    class FileGetter
+    internal class FileGetter
     {
-        const String path = "C:\\Users\\NInjaWizard\\Documents\\Visual Studio 2012\\Projects\\FaireCarte\\FaireCarte\\robot1.txt";
-        enum d { north = 0, east = 1, south = 2, west = 3 };
+        private const String path =
+            "C:\\Users\\NInjaWizard\\Documents\\Visual Studio 2012\\Projects\\FaireCarte\\FaireCarte\\robot1.txt";
 
-        public FileGetter()
+        public void Read()
         {
-        }
-        public void read()
-        {
-            string temp;
-            ArrayList array = new ArrayList();
-            d direction = d.north;
-            Position curPos = new Position(0,0);
+            var pings = new ArrayList();
+            var direction = Direction.North;
+            var currentPosition = new Position(0, 0);
 
-            using (StreamReader sr = new StreamReader(path))
+            using (var sr = new StreamReader(path))
             {
-                temp = sr.ReadToEnd();
-                String[] tab = temp.Split('\n');
-                Noeud n;
-                Noeud old = null;
+                String[] tab = sr.ReadToEnd().Split('\n');
                 foreach (String occ in tab)
                 {
                     String[] line = occ.Split('/');
-                    if (line.Length == 1)//Si c'est un tournant
+                    if (line.Length == 1) //Si c'est un tournant
                     {
                         if (line[0] == "<")
                         {
-                            int t = ((int)d.north - 1) % 4;
-                            direction = (d)t;
+                            direction = (Direction) (((int) Direction.North - 1)%4);
                         }
                         else if (line[0] == ">")
                         {
-                            int t = ((int)d.north + 1) % 4;
-                            direction = (d)t;
+                            direction = (Direction) (((int) Direction.North + 1)%4);
                         }
                     }
                     else //si c'est un ping
                     {
-                        curPos = miseAjour(curPos,direction);
-                       String[] str = line[1].Split(';');
-                       array.Add(new Noeud(curPos.x,curPos.y,new List<String>(str)));
+                        currentPosition = miseAjour(currentPosition, direction);
+                        String[] str = line[1].Split(';');
+                        pings.Add(new Noeud(currentPosition.x, currentPosition.y, new List<String>(str)));
                     }
-                
                 }
-                array.Add(tab);
+                pings.Add(tab);
             }
-
-
         }
-        private Position miseAjour(Position p, d dir)
+
+        private Position miseAjour(Position p, Direction dir)
         {
             switch (dir)
             {
-                case d.north:
+                case Direction.North:
                     p.y += 10;
                     break;
-                case d.east:
+                case Direction.East:
                     p.x += 10;
                     break;
-                case d.south:
+                case Direction.South:
                     p.y -= 10;
                     break;
-                case d.west:
+                case Direction.West:
                     p.x -= 10;
                     break;
             }
             return p;
         }
 
+        private enum Direction
+        {
+            North = 0,
+            East = 1,
+            South = 2,
+            West = 3
+        };
     }
 }
