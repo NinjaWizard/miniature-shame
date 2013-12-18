@@ -61,11 +61,31 @@ namespace FaireCarte.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Int32 similar to 1000.
+        ///   Looks up a localized resource of type System.Int32 similar to 100.
         /// </summary>
         internal static int mapSize {
             get {
                 object obj = ResourceManager.GetObject("mapSize", resourceCulture);
+                return ((int)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Int32 similar to 50.
+        /// </summary>
+        internal static int mapSizeX {
+            get {
+                object obj = ResourceManager.GetObject("mapSizeX", resourceCulture);
+                return ((int)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Int32 similar to 30.
+        /// </summary>
+        internal static int mapSizeY {
+            get {
+                object obj = ResourceManager.GetObject("mapSizeY", resourceCulture);
                 return ((int)(obj));
             }
         }

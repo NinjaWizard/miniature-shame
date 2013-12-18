@@ -22,7 +22,7 @@ namespace FaireCarte
 
             using (var sr = new StreamReader(path))
             {
-                string[] tab = sr.ReadToEnd().Split('\n');
+                string[] tab = sr.ReadToEnd().Split(new[] {"\r\n", "\n"}, StringSplitOptions.None);
                 foreach (String occ in tab)
                 {
                     String[] line = occ.Split('/');
@@ -30,12 +30,11 @@ namespace FaireCarte
                     {
                         if (line[0] == "<")
                         {
-                            //direction = (direction - 1)%4;
-                            direction = (Direction) (((int) Direction.North - 1)%4);
+                            direction = (Direction) (((int) direction - 1)%4);
                         }
                         else if (line[0] == ">")
                         {
-                            direction = (Direction) (((int) Direction.North + 1)%4);
+                            direction = (Direction) (((int) direction + 1)%4);
                         }
                     }
                     else //si c'est un ping
@@ -54,16 +53,16 @@ namespace FaireCarte
             switch (dir)
             {
                 case Direction.North:
-                    p.y += 10;
+                    p.y += 1;
                     break;
                 case Direction.East:
-                    p.x += 10;
+                    p.x += 1;
                     break;
                 case Direction.South:
-                    p.y -= 10;
+                    p.y -= 1;
                     break;
                 case Direction.West:
-                    p.x -= 10;
+                    p.x -= 1;
                     break;
             }
             return p;
@@ -72,11 +71,11 @@ namespace FaireCarte
         public Noeud[,] PingsToMatrix()
         {
             //var map = new Noeud[_pings.Count,_pings.Count];
-            var map = new Noeud[Resources.mapSize,Resources.mapSize];
+            var map = new Noeud[Resources.mapSizeX,Resources.mapSizeY];
 
             foreach (Noeud ping in _pings)
             {
-                map[ping.p.x, ping.p.y] = ping;
+                map[Resources.mapSizeX/2 + ping.p.x, Resources.mapSizeY/2 + ping.p.y] = ping;
             }
 
             return map;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using FaireCarte.Properties;
 
@@ -17,16 +18,24 @@ namespace FaireCarte
             temp.Read();
             Noeud[,] map = temp.PingsToMatrix();
 
-            for (int i = 0; i < Resources.mapSize; i++)
+            for (int i = 0; i < Resources.mapSizeX; i++)
             {
-                for (int j = 0; i < Resources.mapSize; j++)
+                for (int j = 0; j < Resources.mapSizeY; j++)
                 {
                     if (map[i, j] == null)
-                        textBox1.Text += ".";
+                        textBox1.Text += " ";
                     else
                         textBox1.Text += "#";
                 }
                 textBox1.Text += Environment.NewLine;
+            }
+
+            string[] lines = textBox1.Text.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            textBox1.Clear();
+
+            foreach (string line in lines.Where(line => !String.IsNullOrWhiteSpace(line)))
+            {
+                textBox1.Text += line + Environment.NewLine;
             }
         }
     }
