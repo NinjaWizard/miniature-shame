@@ -1,24 +1,28 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using FaireCarte.Properties;
 
 namespace FaireCarte
 {
-    internal class FileGetter
+    public class FileGetter
     {
-        private const String path =
-            "C:\\Users\\NInjaWizard\\Documents\\Visual Studio 2012\\Projects\\FaireCarte\\FaireCarte\\robot1.txt";
+        private const String path = "robot1.txt";
+        private readonly List<Noeud> _pings;
+
+        public FileGetter()
+        {
+            _pings = new List<Noeud>();
+        }
 
         public void Read()
         {
-            var pings = new ArrayList();
             var direction = Direction.North;
             var currentPosition = new Position(0, 0);
 
             using (var sr = new StreamReader(path))
             {
-                String[] tab = sr.ReadToEnd().Split('\n');
+                string[] tab = sr.ReadToEnd().Split('\n');
                 foreach (String occ in tab)
                 {
                     String[] line = occ.Split('/');
@@ -26,6 +30,7 @@ namespace FaireCarte
                     {
                         if (line[0] == "<")
                         {
+                            //direction = (direction - 1)%4;
                             direction = (Direction) (((int) Direction.North - 1)%4);
                         }
                         else if (line[0] == ">")
@@ -37,10 +42,10 @@ namespace FaireCarte
                     {
                         currentPosition = miseAjour(currentPosition, direction);
                         String[] str = line[1].Split(';');
-                        pings.Add(new Noeud(currentPosition.x, currentPosition.y, new List<String>(str)));
+                        _pings.Add(new Noeud(currentPosition.x, currentPosition.y, new List<String>(str)));
                     }
                 }
-                pings.Add(tab);
+                //_pings.Add(tab);
             }
         }
 
@@ -62,6 +67,19 @@ namespace FaireCarte
                     break;
             }
             return p;
+        }
+
+        public Noeud[,] PingsToMatrix()
+        {
+            //var map = new Noeud[_pings.Count,_pings.Count];
+            var map = new Noeud[Resources.mapSize,Resources.mapSize];
+
+            foreach (Noeud ping in _pings)
+            {
+                map[ping.p.x, ping.p.y] = ping;
+            }
+
+            return map;
         }
 
         private enum Direction
