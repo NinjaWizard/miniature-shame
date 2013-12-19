@@ -9,11 +9,19 @@ namespace FaireCarte
     public class FileGetter
     {
         private const String path = "robot1.txt";
-        private readonly List<Noeud> _pings;
+        public List<Noeud> _pings;
+        
+        private Localizer _localizer { get; set; }
 
-        public FileGetter()
+        public FileGetter(Localizer localizer)
         {
             _pings = new List<Noeud>();
+            _localizer = localizer;
+        }
+
+        public void CalculerCotes(List<String> currentScan)
+        {
+            _pings = _localizer.findBestMatch(currentScan, _pings);
         }
 
         public void Read()
@@ -23,7 +31,7 @@ namespace FaireCarte
 
             using (var sr = new StreamReader(path))
             {
-                string[] tab = sr.ReadToEnd().Split(new[] {"\r\n", "\n"}, StringSplitOptions.None);
+                string[] tab = sr.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
                 foreach (String occ in tab)
                 {
                     String[] line = occ.Split('/');
@@ -73,7 +81,6 @@ namespace FaireCarte
                         _pings.Add(new Noeud(currentPosition.x, currentPosition.y, new List<String>(str)));
                     }
                 }
-                //_pings.Add(tab);
             }
         }
 
@@ -100,7 +107,7 @@ namespace FaireCarte
         public Noeud[,] PingsToMatrix()
         {
             //var map = new Noeud[_pings.Count,_pings.Count];
-            var map = new Noeud[Resources.mapSizeX,Resources.mapSizeY];
+            var map = new Noeud[Resources.mapSizeX, Resources.mapSizeY];
 
             foreach (Noeud ping in _pings)
             {
@@ -108,10 +115,10 @@ namespace FaireCarte
                     map[Resources.mapSizeX / 2 + ping.p.x, Resources.mapSizeY / 2 + ping.p.y] = ping;
                 else
                 {
-                    map[Resources.mapSizeX / 2 + ping.p.x, Resources.mapSizeY / 2 + ping.p.y].ssid =
+                    map[Resources.mapSizeX / 2 + ping.p.x, Resources.mapSizeY / 2 + ping.p.y].ssids =
                         map[Resources.mapSizeX / 2 + ping.p.x, Resources.mapSizeY / 2 + ping.p.y]
-                        .ssid
-                        .Where(ssid => ping.ssid.Contains(ssid))
+                        .ssids
+                        .Where(ssid => ping.ssids.Contains(ssid))
                         .ToList();
                 }
             }
@@ -126,5 +133,7 @@ namespace FaireCarte
             West = 2,
             North = 3
         };
+
+
     }
 }
